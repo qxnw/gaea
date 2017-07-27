@@ -58,7 +58,7 @@ func (w *hydraProcess) preBuild() error {
 func (w *hydraProcess) kill(runParam []string) error {
 	w.logger.Info("结束进程:hydra ", runParam)
 	err := kill(runParam)
-	if err != nil && !strings.Contains(err.Error(), "os: process already finished") {
+	if err != nil && !strings.Contains(err.Error(), "process already finished") {
 		w.logger.Error("进程未结束：hydra", err)
 		return err
 	}
