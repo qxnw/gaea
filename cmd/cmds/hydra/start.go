@@ -25,17 +25,17 @@ func (p *hydraProcess) Restart(params []string, projectName ...string) {
 	var errBuild error
 	var errKill error
 	go func() {
+		errKill = p.kill(params)
+		time.Sleep(time.Second * 3)
+		buildSync.Done()
+	}()
+	go func() {
 		for _, v := range projectName {
 			errBuild = p.buildPlugin(v)
 			if errBuild != nil {
 				break
 			}
 		}
-		buildSync.Done()
-	}()
-	go func() {
-		errKill = p.kill(params)
-		time.Sleep(time.Second)
 		buildSync.Done()
 	}()
 
