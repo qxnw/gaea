@@ -11,7 +11,7 @@ import (
 
 var buildLock sync.Mutex
 
-func buildHydra() error {
+func BuildHydra() error {
 	return goInstall("github.com/qxnw/hydra")
 }
 
@@ -20,7 +20,7 @@ func goInstall(projectShortName string) error {
 	buildLock.Lock()
 	defer buildLock.Unlock()
 
-	workDir, err := getHydraExecDir()
+	workDir, err := GetHydraExecDir()
 	if err != nil {
 		return err
 	}
@@ -37,7 +37,7 @@ func goBuild(projectShortName string) error {
 	buildLock.Lock()
 	defer buildLock.Unlock()
 
-	workDir, err := getHydraExecDir()
+	workDir, err := GetHydraExecDir()
 	if err != nil {
 		return err
 	}
@@ -51,12 +51,12 @@ func goBuild(projectShortName string) error {
 	return err
 }
 
-//goBuild  go build -buildmode=plugin
-func goBuildPlugin(projectShortName string) error {
+//BuildPlugin  go build -buildmode=plugin
+func BuildPlugin(projectShortName string) error {
 	buildLock.Lock()
 	defer buildLock.Unlock()
 
-	workDir, err := getHydraExecDir()
+	workDir, err := GetHydraExecDir()
 	if err != nil {
 		return err
 	}

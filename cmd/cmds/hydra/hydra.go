@@ -45,7 +45,7 @@ func (r *command) PreRun(flags *pflag.FlagSet) (err error) {
 		return fmt.Errorf("缺少输入参数:domain")
 	}
 	r.watchers = make([]*Watcher, 0, 1)
-	r.subSysSrcDirNames, r.subSysSrcDirs, err = getSubSystemSrcDir(r.domainServer)
+	r.subSysSrcDirNames, r.subSysSrcDirs, err = GetSubSystemSrcDir(r.domainServer)
 	if err != nil {
 		return
 	}
@@ -57,15 +57,15 @@ func (r *command) PreRun(flags *pflag.FlagSet) (err error) {
 		err = fmt.Errorf("在目录：%v的src目录下未找到:%s的项目文件", r.domainServer, path)
 		return err
 	}
-	hydra, err := getProjectPath("github.com/qxnw/hydra")
+	hydra, err := GetProjectPath("github.com/qxnw/hydra")
 	if err != nil {
 		return err
 	}
-	lib4go, err := getProjectPath("github.com/qxnw/lib4go")
+	lib4go, err := GetProjectPath("github.com/qxnw/lib4go")
 	if err != nil {
 		return err
 	}
-	goPlugin, err := getProjectPath("github.com/qxnw/goplugin")
+	goPlugin, err := GetProjectPath("github.com/qxnw/goplugin")
 	if err != nil {
 		return err
 	}

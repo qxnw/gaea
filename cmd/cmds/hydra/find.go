@@ -21,10 +21,10 @@ func getGoPath() ([]string, error) {
 	return path, nil
 }
 
-func getHydraSrcDir() (string, error) {
-	return getProjectPath("github.com/qxnw/hydra")
+func GetHydraSrcDir() (string, error) {
+	return GetProjectPath("github.com/qxnw/hydra")
 }
-func getProjectPath(short string) (string, error) {
+func GetProjectPath(short string) (string, error) {
 	gopath, err := getGoPath()
 	if err != nil {
 		return "", err
@@ -37,7 +37,7 @@ func getProjectPath(short string) (string, error) {
 	}
 	return "", fmt.Errorf("未找到项目文件:%v", short)
 }
-func getHydraExecDir() (string, error) {
+func GetHydraExecDir() (string, error) {
 	gopath, err := getGoPath()
 	if err != nil {
 		return "", err
@@ -48,9 +48,9 @@ func getHydraExecDir() (string, error) {
 			return filepath.Join(v, "/bin"), nil
 		}
 	}
-	return "", fmt.Errorf("未找到hydra执行文件:%v", gopath)
+	return filepath.Join(gopath[0], "/bin"), nil
 }
-func getSubSystemSrcDir(groupName string) ([]string, []string, error) {
+func GetSubSystemSrcDir(groupName string) ([]string, []string, error) {
 	gopath, err := getGoPath()
 	if err != nil {
 		return nil, nil, err
