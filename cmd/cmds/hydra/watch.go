@@ -21,6 +21,7 @@ var (
 		`(\w+).tmp`,
 	}
 	watchFiles = []string{".go"}
+	watchTmpls = []string{".html"}
 	eventTime  = make(map[string]int64)
 )
 
@@ -66,7 +67,10 @@ func (w *Watcher) Start() {
 				break LOOP
 			case e := <-w.watcher.Events:
 				isBuild := true
-				if !isCurentFile(e.Name, watchFiles) || isCurentFile(e.Name, ignoreFile) {
+				if isCurentFile(e.Name, ignoreFile) {
+					continue
+				}
+				if !isCurentFile(e.Name, watchFiles) && !isTmplFile(e.Name) {
 					continue
 				}
 				mt := getFileModTime(e.Name)
@@ -90,7 +94,6 @@ func (w *Watcher) Start() {
 							w.buildSync.Unlock()
 						}()
 					}
-
 				}
 			case err := <-w.watcher.Errors:
 				w.logger.Warnf("Watcher error: %s", err.Error()) // No need to exit here
@@ -113,6 +116,17 @@ func getFileModTime(path string) int64 {
 }
 func isCurentFile(path string, exts []string) bool {
 	for _, v := range exts {
+		if strings.HasSuffix(path, v) {
+			return true
+		}
+	}
+	return false
+}
+func isTmplFile(path string) bool {
+	if !strings.Contains(path, "views") {
+		return false
+	}
+	for _, v := range watchTmpls {
 		if strings.HasSuffix(path, v) {
 			return true
 		}

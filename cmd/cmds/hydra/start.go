@@ -111,12 +111,10 @@ func (p *hydraProcess) Start(params []string) error {
 			return nil
 		}
 	}
-
 }
-func (p *hydraProcess) Kill(params []string) error {
-	key := strings.Join(params, "|")
-	if pc, ok := p.process[key]; ok {
-		return pc.Signal(os.Interrupt)
+func (p *hydraProcess) Kill() error {
+	for _, v := range p.process {
+		return v.Signal(os.Interrupt)
 	}
 	return nil
 }
@@ -126,8 +124,9 @@ var process = &hydraProcess{process: make(map[string]*os.Process), logger: logge
 func start(params []string) error {
 	return process.Start(params)
 }
+
 func kill(params []string) error {
-	return process.Kill(params)
+	return process.Kill()
 }
 
 func restart(params []string, projectName ...string) {
