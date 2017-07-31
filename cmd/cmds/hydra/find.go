@@ -12,11 +12,17 @@ import (
 func getGoPath() ([]string, error) {
 	gopath := os.Getenv("GOPATH")
 	if gopath == "" {
-		return nil, fmt.Errorf("环境变量未配置gopath")
+		gopath = os.Getenv("HOME")
+		if gopath != "" {
+			gopath = filepath.Join(gopath, "work")
+		}
+	}
+	if gopath == "" {
+		return nil, fmt.Errorf("未配置环境变量GOPATH")
 	}
 	path := strings.Split(gopath, ";")
 	if len(path) == 0 {
-		return nil, fmt.Errorf("环境变量gopath配置的路径为空")
+		return nil, fmt.Errorf("环境变量GOPATH配置的路径为空")
 	}
 	return path, nil
 }

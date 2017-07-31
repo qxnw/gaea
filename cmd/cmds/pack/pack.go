@@ -33,9 +33,11 @@ type command struct {
 func (r *command) PreRun(flags *pflag.FlagSet) error {
 	flags.StringVarP(&r.projectName, "打包项目", "p", "", "需要打包的域或项目名称")
 	flags.BoolVarP(&r.packViews, "打包views", "v", false, "打包web项目的views文件")
-	flags.Parse(os.Args[1:])
+	err := flags.Parse(os.Args[1:])
+	if err != nil {
+		return err
+	}
 	if r.projectName == "" {
-		flags.Usage()
 		return errors.New("未指定打包项目路径")
 	}
 	return nil
@@ -47,20 +49,20 @@ func (r *command) Run(args []string) error {
 	if err != nil {
 		return err
 	}
-	root, pkg, bin, views, err := r.createPackPath()
-	if err != nil {
-		return err
-	}
 	r.logger.Info("编译hydra")
+	files := make([]string, 0, 0)
 	err = hydra.BuildHydra()
 	if err != nil {
-		err = errors.New("hydra编译失败")
+		err = fmt.Errorf("hydra编译失败:%v", err)
 		return err
 	}
-	err = r.copy(root, bin, "hydra")
+	root, packRoot, bin, views, err := r.createPackPath()
 	if err != nil {
 		return err
 	}
+	defer func() {
+		os.RemoveAll(packRoot)
+	}()
 	for _, name := range subNames {
 		r.logger.Infof("编译插件:%s", name)
 		err = hydra.BuildPlugin(name)
@@ -68,13 +70,15 @@ func (r *command) Run(args []string) error {
 			r.logger.Errorf("插件:%s编译失败", name)
 			return err
 		}
-		r.logger.Errorf("插件:%s编译成功", name)
-		err = r.copy(root, bin, r.getPluginName(name))
+		r.logger.Infof("插件:%s编译成功", name)
+		f, err := r.copy(root, bin, r.getPluginName(name))
 		if err != nil {
-			r.logger.Errorf("复制插件:%s文件失败", name)
+			r.logger.Errorf("复制插件:%s文件失败:%v", name, err)
 			return err
 		}
+		files = append(files, f)
 	}
+
 	if r.packViews {
 		for _, name := range subNames {
 			pname, err := hydra.GetProjectPath(name)
@@ -84,48 +88,77 @@ func (r *command) Run(args []string) error {
 			pn := filepath.Join(pname, "views")
 			if _, err = os.Stat(pn); err == nil {
 				filepath.Walk(pn, func(filename string, fi os.FileInfo, err error) error {
-					r.copyFile(filename, filepath.Join(views, path.Base(filename)))
+					if fi != nil && fi.IsDir() {
+						return nil
+					}
+					f := filepath.Join(views, path.Base(filename))
+					r.copyFile(filename, f)
+					files = append(files, f)
+					r.logger.Infof("复制文件:%s", f)
 					return nil
 				})
 			}
 		}
 	}
-
+	f, err := r.copy(root, bin, "hydra")
+	if err != nil {
+		return err
+	}
+	files = append(files, f)
+	zipName, err := r.getZipPath()
+	if err != nil {
+		return err
+	}
+	r.logger.Infof("生成打包文件:%s", zipName)
+	err = r.createZIP(files, zipName)
+	if err != nil {
+		return err
+	}
+	r.logger.Info("打包成功")
 	return nil
 }
 func (r *command) getPluginName(n string) string {
 	names := strings.Split(n, "/")
-	return names[len(names)-1]
+	return names[len(names)-1] + ".so"
 }
+func (r *command) getZipPath() (string, error) {
+	root, err := hydra.GetHydraExecDir()
+	if err != nil {
+		return "", err
+	}
+	packRoot := filepath.Join(root, "pack", r.projectName)
+	return strings.TrimRight(packRoot, "/") + ".zip", nil
+}
+
 func (r *command) createPackPath() (root string, packRoot string, bin string, views string, err error) {
 	root, err = hydra.GetHydraExecDir()
 	if err != nil {
 		return "", "", "", "", err
 	}
-	packRoot = filepath.Join(root, utility.GetGUID())
-	err = os.Mkdir(packRoot, 777)
+	packRoot = filepath.Join(root, "pack", utility.GetGUID()[:8])
+	err = os.MkdirAll(packRoot, 0777)
 	if err != nil {
 		return "", "", "", "", err
 	}
 	bin = filepath.Join(packRoot, "/bin")
-	err = os.Mkdir(bin, 777)
+	err = os.MkdirAll(bin, 0777)
 	if err != nil {
 		return "", "", "", "", err
 	}
 	if !r.packViews {
-		return "", "", "", "", nil
+		return
 	}
 	views = filepath.Join(packRoot, "/views")
-	err = os.Mkdir(views, 777)
+	err = os.MkdirAll(views, 0777)
 	if err != nil {
 		return "", "", "", "", err
 	}
-	return "", "", "", "", nil
+	return
 }
-func (r *command) copy(src, dst string, name string) error {
+func (r *command) copy(src, dst string, name string) (string, error) {
 	src = filepath.Join(src, name)
 	dst = filepath.Join(dst, name)
-	return r.copyFile(src, dst)
+	return dst, r.copyFile(src, dst)
 }
 func (r *command) copyFile(src, dst string) error {
 	srcf, err := os.Open(src)
@@ -135,7 +168,7 @@ func (r *command) copyFile(src, dst string) error {
 	}
 	defer srcf.Close()
 	dstDir := filepath.Dir(dst)
-	err = os.MkdirAll(dstDir, 777)
+	err = os.MkdirAll(dstDir, 0777)
 	if err != nil {
 		err = fmt.Errorf("创建文件夹失败:%s(err:%v)", dstDir, err)
 		return err
@@ -146,16 +179,28 @@ func (r *command) copyFile(src, dst string) error {
 		return err
 	}
 	defer dstf.Close()
-	_, err = io.Copy(dstf, srcf)
+	n, err := io.Copy(dstf, srcf)
+	r.logger.Info("复制文件:", src, dst, n)
 	return err
 }
 func (r *command) createZIP(files []string, zipName string) error {
+	dir := filepath.Dir(zipName)
+	err := os.MkdirAll(dir, 0777)
+	if err != nil {
+		err = fmt.Errorf("创建文件夹失败:%s(err:%v)", dir, err)
+		return err
+	}
 	buf := new(bytes.Buffer)
 
 	// 创建一个压缩文档
 	w := zip.NewWriter(buf)
 	for _, file := range files {
-		f, err := w.Create(path.Base(file))
+		r.logger.Info("添加文件:", file)
+		view := ""
+		if strings.HasSuffix(filepath.Dir(file), "/views") {
+			view = "views"
+		}
+		f, err := w.Create(filepath.Join(view, path.Base(file)))
 		if err != nil {
 			return err
 		}
@@ -169,7 +214,7 @@ func (r *command) createZIP(files []string, zipName string) error {
 			return err
 		}
 	}
-	err := w.Close()
+	err = w.Close()
 	if err != nil {
 		return err
 	}
