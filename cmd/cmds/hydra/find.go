@@ -30,6 +30,20 @@ func getGoPath() ([]string, error) {
 func GetHydraSrcDir() (string, error) {
 	return GetProjectPath("github.com/qxnw/hydra")
 }
+
+func GetProjectSrcPath(short string) (string, error) {
+	gopath, err := getGoPath()
+	if err != nil {
+		return "", err
+	}
+	for _, v := range gopath {
+		path := filepath.Join(v, "/src/", short)
+		if _, err := os.Stat(path); err == nil {
+			return path, nil
+		}
+	}
+	return filepath.Join(gopath[0], "/src/", short), nil
+}
 func GetProjectPath(short string) (string, error) {
 	gopath, err := getGoPath()
 	if err != nil {

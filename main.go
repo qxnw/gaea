@@ -5,6 +5,7 @@ import (
 
 	"github.com/qxnw/gaea/cmd"
 	_ "github.com/qxnw/gaea/cmd/cmds/hydra"
+	_ "github.com/qxnw/gaea/cmd/cmds/new"
 	_ "github.com/qxnw/gaea/cmd/cmds/pack"
 	"github.com/qxnw/lib4go/logger"
 	"github.com/spf13/pflag"
