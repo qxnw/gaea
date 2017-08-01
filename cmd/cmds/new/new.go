@@ -12,6 +12,7 @@ import (
 
 	"github.com/qxnw/gaea/cmd"
 	"github.com/qxnw/gaea/cmd/cmds/hydra"
+	"github.com/qxnw/gaea/cmd/cmds/new/api"
 	"github.com/qxnw/gaea/cmd/cmds/new/web"
 	"github.com/qxnw/lib4go/logger"
 	"github.com/qxnw/lib4go/transform"
@@ -54,10 +55,16 @@ func (r *command) Run(args []string) error {
 		err = errors.New("项目已存在或不为空")
 		return err
 	}
-	//	if r.newWeb {
-	return r.createProject(fullName, web.TmplMap)
-	//}
-	//	return nil
+	if r.newWeb {
+		err = r.createProject(fullName, web.TmplMap)
+	} else {
+		err = r.createProject(fullName, api.TmplMap)
+	}
+	if err != nil {
+		return err
+	}
+	r.logger.Info("项目生成成功:", fullName)
+	return nil
 
 }
 func (r *command) createProject(root string, data map[string]string) error {
