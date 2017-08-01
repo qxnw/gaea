@@ -41,13 +41,13 @@ func GetContext(ctx goplugin.Context, rpc goplugin.RPCInvoker, fields map[string
 		return
 	}
 
-	err = context.CheckInput(fields["mustFields"]...)
+	err = context.CheckInput(fields["input"]...)
 	if err != nil {
 		status = errorCode.NOT_ACCEPTABLE
 		context.Close()
 		return
 	}
-	err = context.CheckArgs(fields["mustArgs"]...)
+	err = context.CheckArgs(fields["args"]...)
 	if err != nil {
 		status = errorCode.NOT_EXTENDED
 		context.Close()

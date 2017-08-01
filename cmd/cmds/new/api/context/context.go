@@ -29,13 +29,13 @@ func GetContext(ctx goplugin.Context, invoker goplugin.RPCInvoker, service map[s
 		status = errorCode.SERVER_ERROR
 		return
 	}
-	err = context.CheckInput(service["mustFields"]...)
+	err = context.CheckInput(service["input"]...)
 	if err != nil {
 		status = errorCode.NOT_ACCEPTABLE
 		context.Close()
 		return
 	}
-	err = context.CheckArgs(service["mustArgs"]...)
+	err = context.CheckArgs(service["args"]...)
 	if err != nil {
 		status = errorCode.NOT_EXTENDED
 		context.Close()

@@ -1,11 +1,13 @@
 package conf
 
 var ConfTmpl = `package conf
+import (
+	"encoding/json"
+	"fmt"
 
-import ("github.com/qxnw/goplugin"
- "encoding/json"
- "github.com/qxnw/lib4go/concurrent/cmap"
- "fmt")
+	"github.com/qxnw/goplugin"
+	"github.com/qxnw/lib4go/concurrent/cmap"
+)
 
 type {@pClassName}Conf struct {
 }
@@ -18,8 +20,8 @@ func init() {
 
 //GetConf 获取小微配置信息
 func GetConf(ctx *goplugin.PluginContext) (c *{@pClassName}Conf, err error) {
-	name, err := ctx.GetArgByName("conf")
-	if err != nil {
+	name, ok := ctx.Args["conf"]
+	if !ok {
 		return nil, nil
 	}
 	_, v, err := confCache.SetIfAbsentCb(name, func(input ...interface{}) (interface{}, error) {

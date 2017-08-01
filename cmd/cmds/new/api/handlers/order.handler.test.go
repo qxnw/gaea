@@ -22,7 +22,8 @@ func (o *orderMock) QueryById(context *context.Context, id string) ([]db.QueryRo
 }
 
 func TestHandle1(t *testing.T) {
-	query := &OrderQuery{orderLib: &orderMock{}}
+	query := NewOrderQuery()
+	query.orderLib = &orderMock{}
 	context := goplugin.NewTContext()
 	rpc := &goplugin.TRPC{}
 	s, r, p, err := query.Handle("", context, rpc)
@@ -33,7 +34,8 @@ func TestHandle1(t *testing.T) {
 }
 
 func TestHandle11(t *testing.T) {
-	query := &OrderQuery{orderLib: &orderMock{}}
+	query := NewOrderQuery()
+	query.orderLib = &orderMock{}
 	context := goplugin.NewTContext()
 	context.Input.Set("session_Id", "1")
 	rpc := &goplugin.TRPC{}
@@ -44,7 +46,8 @@ func TestHandle11(t *testing.T) {
 	ut.Refute(t, err, "")
 }
 func TestHandle2(t *testing.T) {
-	query := &OrderQuery{orderLib: &orderMock{}}
+	query := NewOrderQuery()
+	query.orderLib = &orderMock{}
 	context := goplugin.NewTContext()
 	context.Input.Set("session_id", "123445")
 	rpc := &goplugin.TRPC{}
@@ -55,7 +58,8 @@ func TestHandle2(t *testing.T) {
 	ut.Refute(t, err, "")
 }
 func TestHandle3(t *testing.T) {
-	query := &OrderQuery{orderLib: &orderMock{}}
+	query := NewOrderQuery()
+	query.orderLib = &orderMock{}
 	context := goplugin.NewTContext()
 	context.Input.Set("session_id", "1")
 	rpc := &goplugin.TRPC{}
@@ -64,4 +68,5 @@ func TestHandle3(t *testing.T) {
 	ut.Expect(t, len(r.([]db.QueryRow)), 1)
 	ut.Expect(t, len(p), 0)
 	ut.Refute(t, err, "")
-}`
+}
+`

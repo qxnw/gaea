@@ -13,21 +13,22 @@ import (
 //OrderQuery 订单查询
 type OrderQuery struct {
 	orderLib order.IOrderLib
+	fields   map[string][]string
 }
 
 //NewOrderQuery 创建订单查询对象
 func NewOrderQuery() *OrderQuery {
 	return &OrderQuery{
 		orderLib: &order.OrderLib{},
+		fields: map[string][]string{
+			"input": []string{"session_id"},
+		},
 	}
 }
 
 //Handle 业务处理
-func (o *OrderQuery) Handle(service string, ctx goplugin.Context, invoker goplugin.RPCInvoker) (status int, result interface{}, p map[string]interface{}, err error) {
-	serv := map[string][]string{
-		"mustFields": []string{"session_id"},
-	}
-	context, status, p, err := context.GetContext(ctx, invoker, serv)
+func (o *OrderQuery) Handle(service string, ctx goplugin.Context, rpc goplugin.RPCInvoker) (status int, result interface{}, p map[string]interface{}, err error) {
+	context, status, p, err := context.GetContext(ctx, rpc, o.fields)
 	if err != nil {
 		return
 	}

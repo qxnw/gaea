@@ -10,7 +10,7 @@ import (
 
 //IndexController 首页
 type IndexController struct {
-	requiredFields map[string][]string
+	fields map[string][]string
 }
 
 //NewIndexController 创建首页
@@ -20,7 +20,7 @@ func NewIndexController() *IndexController {
 
 //Handle 首页处理
 func (c *IndexController) Handle(service string, ctx goplugin.Context, rpc goplugin.RPCInvoker) (status int, result interface{}, p map[string]interface{}, err error) {
-	context, status, p, err := context.GetContext(ctx, rpc, c.requiredFields)
+	context, status, p, err := context.GetContext(ctx, rpc, c.fields)
 	if err != nil {
 		return
 	}
