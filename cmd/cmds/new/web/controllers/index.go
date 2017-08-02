@@ -29,22 +29,12 @@ func (c *IndexController) Handle(service string, ctx goplugin.Context, rpc goplu
 	context.Info("--------访问首页--------")
 	rt := make(map[string]string)
 	err = context.IsLogin()
-	if err == nil {
-		context.ClearAuthTimes() //授权成功，清除授权次数
+	if err == nil {	
 		rt["xsrf_token"] = context.GetXSRFToken()
 		rt["xsrf_key"] = context.Conf.XSRFKey
 		result = rt
 		return
 	}
-	err = context.AddAuthTimes() //累加授权次数
-	if err != nil {
-		context.Errorf("授权超过限制次数：%v", err)
-		context.Redirect(302, "/error")
-		return
-	}
-
-	context.Error("用户登录信息不存在，跳转到微信授权")
-	context.RedirectToWXAuth() //转跳到授权页面
 	return
 }
 

@@ -2,20 +2,18 @@ package conf
 
 var ConfTmpl = `package conf
 
-import "github.com/qxnw/goplugin"
-import "encoding/json"
-import "github.com/qxnw/lib4go/concurrent/cmap"
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+
+	"github.com/qxnw/goplugin"
+	"github.com/qxnw/lib4go/concurrent/cmap"
+)
 
 type {@pClassName}Conf struct {
-	AuthorizeLogin  string 
-	TaskShareURL    string 
-	WXAuthURL       string 
-	APPID           string 
-	HostName        string 
-	WXAuthNotifyURL string 
-	XSRFKey         string 
-	XSRFSecret      string 
+	XSRFKey    string
+	XSRFSecret string
+	HostName   string
 }
 
 var confCache cmap.ConcurrentMap

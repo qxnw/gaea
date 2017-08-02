@@ -12,29 +12,29 @@ import (
 )
 
 func main() {
-	logger := logger.GetSession("gaea", logger.CreateSession())
-	logger.Info("启动 gaea ...")
-	defer func() {
-		logger.WaitClose()
-	}()
+	gaeaLogger := logger.GetSession("gaea", logger.CreateSession())
+
+	defer logger.Close()
+
 	if len(os.Args) < 2 {
-		logger.Error("未指定命令名称：run,pack,hydra")
+		gaeaLogger.Error("未指定命令名称：run,pack,hydra")
 		return
 	}
 	name := os.Args[1]
-	cmd, err := cmds.NewCommand(name, logger)
+	cmd, err := cmds.NewCommand(name, gaeaLogger)
 	if err != nil {
-		logger.Error(err)
+		gaeaLogger.Error(err)
 		return
 	}
 	err = cmd.PreRun(pflag.CommandLine)
 	if err != nil {
-		logger.Error(err)
+		gaeaLogger.Error(err)
 		return
 	}
+	gaeaLogger.Info("启动 gaea ...")
 	err = cmd.Run(pflag.Args())
 	if err != nil {
-		logger.Error(err)
+		gaeaLogger.Error(err)
 		return
 	}
 

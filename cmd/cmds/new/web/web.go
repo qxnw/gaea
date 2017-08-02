@@ -53,7 +53,7 @@ var TmplMap map[string]string
 func init() {
 	TmplMap = map[string]string{
 		"main.go":              mainTmpl,
-		"routers.go":            routerTmpl,
+		"routers.go":           routerTmpl,
 		"views/index.html":     views.IndexViewTmpl,
 		"controllers/index.go": controllers.IndexControllerTmpl,
 		"context/context.go":   context.ContextTmpl,

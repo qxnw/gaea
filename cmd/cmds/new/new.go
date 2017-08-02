@@ -13,7 +13,9 @@ import (
 	"github.com/qxnw/gaea/cmd"
 	"github.com/qxnw/gaea/cmd/cmds/hydra"
 	"github.com/qxnw/gaea/cmd/cmds/new/api"
+	"github.com/qxnw/gaea/cmd/cmds/new/fix"
 	"github.com/qxnw/gaea/cmd/cmds/new/web"
+	"github.com/qxnw/gaea/cmd/cmds/new/wx"
 	"github.com/qxnw/lib4go/logger"
 	"github.com/qxnw/lib4go/transform"
 	"github.com/spf13/pflag"
@@ -23,16 +25,25 @@ import (
 type command struct {
 	logger      *logger.Logger
 	projectName string
-	newWeb      bool
+	fix         bool
+	wx          bool
+	api         bool
+	web         bool
 	tf          *transform.Transform
 }
 
 //PreRun 预执行用于绑定输入参数及运行前初始化
 func (r *command) PreRun(flags *pflag.FlagSet) error {
-	flags.BoolVarP(&r.newWeb, "web project", "w", false, "指定为web项目")
+	flags.BoolVar(&r.fix, "fix", false, "指定为混合模式")
+	flags.BoolVar(&r.wx, "wx", false, "指定为微信模式")
+	flags.BoolVar(&r.api, "api", false, "指定为api模式")
+	flags.BoolVar(&r.web, "web", false, "指定为web模式")
 	err := flags.Parse(os.Args[1:])
 	if err != nil {
 		return err
+	}
+	if !r.fix && !r.wx && !r.api && !r.web {
+		return errors.New("未指定项目生成模式(--fix,--wx,--api,--web)")
 	}
 	if len(os.Args) < 2 {
 		return errors.New("未指定目路径")
@@ -52,14 +63,19 @@ func (r *command) Run(args []string) error {
 		return err
 	}
 	if _, err := os.Stat(fullName); !os.IsNotExist(err) {
-		err = errors.New("项目已存在或不为空")
+		err = fmt.Errorf("项目已存在或不为空:%s", fullName)
 		return err
 	}
-	if r.newWeb {
-		err = r.createProject(fullName, web.TmplMap)
-	} else {
+	if r.wx {
+		err = r.createProject(fullName, wx.TmplMap)
+	} else if r.api {
 		err = r.createProject(fullName, api.TmplMap)
+	} else if r.web {
+		err = r.createProject(fullName, web.TmplMap)
+	} else if r.fix {
+		err = r.createProject(fullName, fix.TmplMap)
 	}
+
 	if err != nil {
 		return err
 	}
