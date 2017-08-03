@@ -90,11 +90,11 @@ func (p *hydraProcess) Start(params []string) error {
 		return err
 	}
 	os.Chdir(workDir)
-	px := make([]string, 0, len(params)+1)
-	px = append(px, "./hydra")
-	px = append(px, params...)
+	//px := make([]string, 0, len(params)+1)
+	//	px = append(px, "./hydra")
+	//px = append(px, params...)
 
-	icmd := exec.Command("sudo", px...)
+	icmd := exec.Command("./hydra", params...)
 	icmd.Stdin = os.Stdin
 	icmd.Stdout = os.Stdout
 	runChan := make(chan error, 1)
