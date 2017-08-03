@@ -62,7 +62,6 @@ func (w *hydraProcess) kill(runParam []string) error {
 		w.logger.Error("进程未结束：hydra", err)
 		return err
 	}
-	w.logger.Info("hydra已关闭")
 	return nil
 }
 func (w *hydraProcess) buildPlugin(projectName string) error {
@@ -91,8 +90,11 @@ func (p *hydraProcess) Start(params []string) error {
 		return err
 	}
 	os.Chdir(workDir)
+	px := make([]string, 0, len(params)+1)
+	px = append(px, "./hydra")
+	px = append(px, params...)
 
-	icmd := exec.Command("./hydra", params...)
+	icmd := exec.Command("sudo", px...)
 	icmd.Stdin = os.Stdin
 	icmd.Stdout = os.Stdout
 	runChan := make(chan error, 1)
@@ -114,8 +116,13 @@ func (p *hydraProcess) Start(params []string) error {
 }
 func (p *hydraProcess) Kill() error {
 	for _, v := range p.process {
-		return v.Signal(os.Interrupt)
+		err := v.Signal(os.Kill)
+		if err != nil {
+			return err
+		}
+
 	}
+	p.process = make(map[string]*os.Process)
 	return nil
 }
 
