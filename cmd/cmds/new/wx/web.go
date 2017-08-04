@@ -14,6 +14,7 @@ import (
 	"fmt"
 
 	"github.com/qxnw/goplugin"
+	"github.com/qxnw/lib4go/types"
 )
 
 type {@pShortName} struct {
@@ -28,10 +29,11 @@ func (p *{@pShortName}) GetServices() []string {
 func (p *{@pShortName}) Handle(name string, mode string, service string, c goplugin.Context, rpc goplugin.RPCInvoker) (status int, result interface{}, param map[string]interface{}, err error) {
 	if h, ok := GetHandlers()[service]; ok {
 		status, r, param, err := h.Handle(service, c, rpc)
-		if err != nil || status != 200 {
+		if err != nil || (status != 200 && status != 0) {
+			status = types.DecodeInt(status, 0, 500, status)
 			return status, result, nil, fmt.Errorf("{@pImportName}:status:%d,err:%v", status, err)
 		}
-		return status, r, param, err
+		return 200, r, param, nil
 	}
 	return 404, "", nil, fmt.Errorf("{@pImportName} 未找到服务:%s", service)
 }
