@@ -2,12 +2,9 @@ package handlers
 
 var HandlerOrderTmpl = `package handlers
 import (
-	"{@pImportName}/context"
 
 	"{@pImportName}/libs/order"
-
-	"github.com/qxnw/goplugin"
-	"github.com/qxnw/goplugin/errorCode"
+	"github.com/qxnw/hydra/context"
 )
 
 //OrderQuery 订单查询
@@ -27,27 +24,29 @@ func NewOrderQuery() *OrderQuery {
 }
 
 //Handle 业务处理
-func (o *OrderQuery) Handle(service string, ctx goplugin.Context, rpc goplugin.RPCInvoker) (status int, result interface{}, p map[string]interface{}, err error) {
-	context, status, p, err := context.GetContext(ctx, rpc, o.fields)
+func (o *OrderQuery) Handle(name string, mode string, service string, ctx *context.Context) (response *context.ObjectResponse, err error) {
+	response = context.GetObjectResponse()
+	status, err := ctx.Input.Check(o.fields)
 	if err != nil {
+		response.SetError(status, err)
 		return
 	}
 
-	context.Info("---------------查询订单信息---------------")
-	defer context.Close()
-	sid, _ := context.Input.Get("session_id")
+	ctx.Info("---------------查询订单信息---------------")
+	sid := ctx.Input.GetString("session_id")
 
-	context.Info("1. 从数据库获取订单信息")
-	orderList, err := o.orderLib.QueryById(context, sid)
+	ctx.Info("1. 从数据库获取订单信息")
+	orderList, err := o.orderLib.QueryById(ctx, sid)
 	if err != nil {
-		return errorCode.UNAUTHORIZED, nil, p, err
+		response.SetStatus(context.ERR_UNAUTHORIZED)
+		return
 	}
-	context.Info("2. 返回结果")
-	return errorCode.OK, orderList, p, nil
+	ctx.Info("2. 返回结果")
+	response.Success(orderList)
+	return
 }
 
 //Close 释放资源
 func (n *OrderQuery) Close() error {
 	return nil
-}
-`
+}`

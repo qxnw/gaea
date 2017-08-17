@@ -2,7 +2,6 @@ package web
 
 import (
 	"github.com/qxnw/gaea/cmd/cmds/new/web/conf"
-	"github.com/qxnw/gaea/cmd/cmds/new/web/context"
 	"github.com/qxnw/gaea/cmd/cmds/new/web/controllers"
 	"github.com/qxnw/gaea/cmd/cmds/new/web/views"
 )
@@ -12,43 +11,36 @@ var mainTmpl = `package main
 //go build -buildmode=plugin
 import (
 	"fmt"
-
-	"github.com/qxnw/goplugin"
+	"github.com/qxnw/hydra/context"
 )
 
-type {@pShortName} struct {
+//WebService 服务名称
+type WebService struct {
 }
 
 //GetServices 获取当前插件提供的所有服务
-func (p *{@pShortName}) GetServices() []string {
+func (p *WebService) GetServices() []string {
 	return GetServices()
 }
 
 //Handle 业务处理
-func (p *{@pShortName}) Handle(name string, mode string, service string, c goplugin.Context, rpc goplugin.RPCInvoker) (status int, result interface{}, param map[string]interface{}, err error) {
-	if h, ok := GetHandlers()[service]; ok {
-		status, r, param, err := h.Handle(service, c, rpc)
-		if err != nil || status != 200 {
-			return status, result, nil, fmt.Errorf("{@pImportName}:status:%d,err:%v", status, err)
-		}
-		return status, r, param, err
+func (p *WebService) Handle(name string, mode string, service string, ctx *context.Context) (response context.Response, err error) {
+	response, err = Handle(name, mode, service, ctx)
+	if err != nil {
+		err = fmt.Errorf("{@pImportName}:status:%d,err:%v", response.GetStatus(err), err)
 	}
-	return 404, "", nil, fmt.Errorf("{@pImportName} 未找到服务:%s", service)
+	return
 }
-func (p *{@pShortName}) Close() error {
+func (p *WebService) Close() error {
 	return nil
 }
 
 //GetWorker 获取当前worker
-func GetWorker() goplugin.Worker {
-	return &{@pShortName}{}
+func GetWorker() context.Worker {
+	return &WebService{}
 }`
 
 var TmplMap map[string]string
-
-//{@pShortName} xwuser
-//{@pClassName} XwUser
-//{@pImportName} /xwll/xwuser
 
 func init() {
 	TmplMap = map[string]string{
@@ -56,7 +48,6 @@ func init() {
 		"routers.go":           routerTmpl,
 		"views/index.html":     views.IndexViewTmpl,
 		"controllers/index.go": controllers.IndexControllerTmpl,
-		"context/context.go":   context.ContextTmpl,
 		"conf/conf.go":         conf.ConfTmpl,
 	}
 }

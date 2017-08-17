@@ -4,28 +4,27 @@ var routerTmpl = `package main
 
 import (
 	"{@pImportName}/controllers"
-	"{@pImportName}/handlers"
-	"github.com/qxnw/goplugin"
+"{@pImportName}/handlers"
+	"github.com/qxnw/hydra/context"
 )
 
-var reg *goplugin.Registry
+var reg *context.Registry
 
 func init() {
-	reg = goplugin.NewRegistry()
+	reg = context.NewRegistry()
 }
 
-func Register(name string, handler goplugin.Handler) {
+func Register(name string, handler interface{}) {
 	reg.Register(name, handler)
 }
 func GetServices() []string {
 	return reg.Services
 }
-func GetHandlers() map[string]goplugin.Handler {
-	return reg.ServiceHandlers
+func Handle(name string, mode string, service string, ctx *context.Context) (r context.Response, err error) {
+	return reg.Handle(name, mode, service, ctx)
 }
 
 func init() {
 	Register("/index", controllers.NewIndexController())
 	Register("/order/query", handlers.NewOrderQuery())
-}
-`
+}`

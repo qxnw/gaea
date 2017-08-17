@@ -9,7 +9,6 @@ var ConfTmpl = `import (
 	"github.com/qxnw/lib4go/concurrent/cmap"
 )
 
-
 type APIConf struct {
 }
 
