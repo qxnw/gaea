@@ -54,7 +54,7 @@ func (r *command) PreRun(flags *pflag.FlagSet) (err error) {
 		if err != nil {
 			return err
 		}
-		err = fmt.Errorf("在目录：%v的src目录下未找到:%s的项目文件", r.domainServer, path)
+		err = fmt.Errorf("未找到插件类型项目文件:%s/src/%s项目文件", path[0], r.domainServer)
 		return err
 	}
 	hydra, err := GetProjectPath("github.com/qxnw/hydra")

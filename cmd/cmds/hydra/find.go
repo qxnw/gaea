@@ -105,7 +105,7 @@ func isPluginFile(fileName string) bool {
 		if err == io.EOF {
 			return false
 		}
-		if strings.Contains(line, "GetWorker") && strings.Contains(line, "goplugin.Worker") {
+		if strings.Contains(line, "GetWorker") && strings.Contains(line, "context.Worker") {
 			return true
 		}
 	}

@@ -109,10 +109,9 @@ func (r *command) createProject(root string, data map[string]string) error {
 }
 func (r *command) makeParams() *transform.Transform {
 	names := strings.Split(strings.Trim(r.projectName, "/"), "/")
-	className := ""
-	for _, v := range names {
-		className += strings.ToUpper(v[0:1]) + v[1:]
-	}
+	className := names[len(names)-1]
+	className = strings.ToUpper(className[0:1]) + className[1:]
+
 	tf := transform.New()
 	tf.Set("pShortName", names[len(names)-1])
 	tf.Set("pImportName", strings.Trim(r.projectName, "/"))
