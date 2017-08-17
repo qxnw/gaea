@@ -65,13 +65,8 @@ func (r *command) PreRun(flags *pflag.FlagSet) (err error) {
 	if err != nil {
 		return err
 	}
-	goPlugin, err := GetProjectPath("github.com/qxnw/goplugin")
-	if err != nil {
-		return err
-	}
 	r.dependencePath = append(r.dependencePath, r.getChildrenDirs(hydra)...)
 	r.dependencePath = append(r.dependencePath, r.getChildrenDirs(lib4go)...)
-	r.dependencePath = append(r.dependencePath, r.getChildrenDirs(goPlugin)...)
 
 	return nil
 }
