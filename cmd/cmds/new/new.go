@@ -34,16 +34,16 @@ type command struct {
 
 //PreRun 预执行用于绑定输入参数及运行前初始化
 func (r *command) PreRun(flags *pflag.FlagSet) error {
-	flags.BoolVar(&r.fix, "fix", false, "指定为混合模式")
+	flags.BoolVar(&r.fix, "mix", false, "指定为混合模式")
 	flags.BoolVar(&r.wx, "wx", false, "指定为微信模式")
-	flags.BoolVar(&r.api, "api", false, "指定为api模式")
+	flags.BoolVar(&r.api, "service", false, "指定为service模式")
 	flags.BoolVar(&r.web, "web", false, "指定为web模式")
 	err := flags.Parse(os.Args[1:])
 	if err != nil {
 		return err
 	}
 	if !r.fix && !r.wx && !r.api && !r.web {
-		return errors.New("未指定项目生成模式(--fix,--wx,--api,--web)")
+		return errors.New("未指定项目生成模式(--service,--web,--mix,--wx)")
 	}
 	if len(os.Args) < 2 {
 		return errors.New("未指定目路径")

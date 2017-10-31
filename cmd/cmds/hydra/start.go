@@ -97,6 +97,7 @@ func (p *hydraProcess) Start(params []string) error {
 	icmd := exec.Command("./hydra", params...)
 	icmd.Stdin = os.Stdin
 	icmd.Stdout = os.Stdout
+	icmd.Stderr = os.Stderr
 	runChan := make(chan error, 1)
 	go func() {
 		err := icmd.Run()

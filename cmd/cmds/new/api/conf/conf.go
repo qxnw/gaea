@@ -20,7 +20,7 @@ func init() {
 
 //GetConf 获取系统配置文件
 func GetConf(ctx *context.Context) (c *APIConf, err error) {
-	name, err := ctx.Input.GetArgByName("conf")
+	name, err := ctx.Input.GetArgsByName("conf")
 	if err != nil {
 		return nil, err
 	}

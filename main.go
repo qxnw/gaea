@@ -17,7 +17,7 @@ func main() {
 	defer logger.Close()
 
 	if len(os.Args) < 2 {
-		gaeaLogger.Error("未指定命令名称：run,pack,hydra")
+		gaeaLogger.Error("未指定命令名称：new,run,pack")
 		return
 	}
 	name := os.Args[1]

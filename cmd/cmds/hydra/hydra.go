@@ -124,5 +124,5 @@ func (r *commandResolver) Resolve(name string, log *logger.Logger) (cmds.IComman
 	return &command{logger: log, HFlags: &hydra.HFlags{}}, nil
 }
 func init() {
-	cmds.Register("hydra", &commandResolver{})
+	cmds.Register("run", &commandResolver{})
 }
