@@ -1,9 +1,8 @@
 package api
 
 import (
-	"github.com/qxnw/gaea/cmd/cmds/new/api/libs/order"
+	"github.com/qxnw/gaea/cmd/cmds/new/api/conf"
 	"github.com/qxnw/gaea/cmd/cmds/new/api/services"
-	"github.com/qxnw/gaea/cmd/cmds/new/wx/conf"
 )
 
 var mainTmpl = `package main
@@ -44,12 +43,9 @@ var TmplMap map[string]string
 
 func init() {
 	TmplMap = map[string]string{
-		"main.go":                      mainTmpl,
-		"registry.go":                  routerTmpl,
-		"libs/order/orderlib.go":       order.OrderLibTmpl,
-		"libs/order/sql.go":            order.OrderSQLTmpl,
-		"services/order.query.go":      handlers.HandlerOrderTmpl,
-		"services/order.query_test.go": handlers.HandlerTestTmpl,
-		"conf/conf.go":                 conf.ConfTmpl,
+		"main.go":               mainTmpl,
+		"registry.go":           routerTmpl,
+		"services/myservice.go": handlers.HandlerOrderTmpl,
+		"conf/conf.go":          conf.ConfTmpl,
 	}
 }

@@ -9,7 +9,7 @@ var ConfTmpl = `import (
 	"github.com/qxnw/lib4go/concurrent/cmap"
 )
 
-type APIConf struct {
+type Conf struct {
 }
 
 var confCache cmap.ConcurrentMap
@@ -19,7 +19,7 @@ func init() {
 }
 
 //GetConf 获取系统配置文件
-func GetConf(ctx *context.Context) (c *APIConf, err error) {
+func GetConf(ctx *context.Context) (c *Conf, err error) {
 	name, err := ctx.Input.GetArgsByName("conf")
 	if err != nil {
 		return nil, err
@@ -30,7 +30,7 @@ func GetConf(ctx *context.Context) (c *APIConf, err error) {
 		if err != nil {
 			return nil, err
 		}
-		conf := &APIConf{}
+		conf := &Conf{}
 		err = json.Unmarshal([]byte(content), conf)
 		if err != nil {
 			err = fmt.Errorf("conf配置文件错误:%v", err)
@@ -41,5 +41,5 @@ func GetConf(ctx *context.Context) (c *APIConf, err error) {
 	if err != nil {
 		return nil, err
 	}
-	return v.(*APIConf), nil
+	return v.(*Conf), nil
 }`

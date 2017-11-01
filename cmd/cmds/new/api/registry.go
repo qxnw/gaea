@@ -3,7 +3,7 @@ package api
 var routerTmpl = `package main
 
 import (
-	"{@pImportName}/handlers"
+	"{@pImportName}/services"
 
 	"github.com/qxnw/hydra/context"
 )
@@ -25,5 +25,5 @@ func Handle(name string, mode string, service string, ctx *context.Context) (r c
 }
 
 func init() {
-	Register("/order/query", handlers.NewOrderQuery())
+	Register("/myservice", services.NewMyService())
 }`
