@@ -11,12 +11,12 @@ import (
 
 var buildLock sync.Mutex
 
-func BuildHydra() error {
-	return goInstall("github.com/qxnw/hydra")
+func BuildHydra(version string) error {
+	return goInstallHydra("github.com/qxnw/hydra", version)
 }
 
 // goInstall 调用go install生成项目程序
-func goInstall(projectShortName string) error {
+func goInstallHydra(projectShortName string, version string) error {
 	buildLock.Lock()
 	defer buildLock.Unlock()
 
@@ -25,15 +25,15 @@ func goInstall(projectShortName string) error {
 		return err
 	}
 	os.Chdir(workDir)
-
-	icmd := exec.Command("go", "install", strings.Trim(projectShortName, "//"))
+	os.Remove("hydra")
+	icmd := exec.Command("go", "install", "-ldflags", fmt.Sprintf("-X main.VERSION=%s", version), strings.Trim(projectShortName, "//"))
 	icmd.Stdout = os.Stdout
 	icmd.Stderr = os.Stderr
-	icmd.Env = append(os.Environ(), "GOGC=off")
+	//icmd.Env = append(os.Environ(), "GOGC=off")
 	return icmd.Run()
 }
 
-func goBuild(projectShortName string) error {
+func GoBuild(projectShortName string) error {
 	buildLock.Lock()
 	defer buildLock.Unlock()
 

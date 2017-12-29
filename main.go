@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/qxnw/gaea/cmd"
+	_ "github.com/qxnw/gaea/cmd/cmds/build"
 	_ "github.com/qxnw/gaea/cmd/cmds/hydra"
 	_ "github.com/qxnw/gaea/cmd/cmds/new"
 	_ "github.com/qxnw/gaea/cmd/cmds/pack"
@@ -17,7 +18,7 @@ func main() {
 	defer logger.Close()
 
 	if len(os.Args) < 2 {
-		gaeaLogger.Error("未指定命令名称：new,run,pack")
+		gaeaLogger.Error("未指定命令名称：new,run,pack,build")
 		return
 	}
 	name := os.Args[1]

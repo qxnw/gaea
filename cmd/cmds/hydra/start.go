@@ -47,7 +47,7 @@ func (p *hydraProcess) Restart(params []string, projectName ...string) {
 
 func (w *hydraProcess) preBuild() error {
 	w.logger.Info("开始编译hydra...")
-	err := goInstall("github.com/qxnw/hydra")
+	err := BuildHydra("0.0.1")
 	if err != nil {
 		w.logger.Error("hydra编译失败:", err)
 		return err
