@@ -3,12 +3,14 @@ package pack
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
 
 	"github.com/qxnw/gaea/cmd"
 	"github.com/qxnw/lib4go/logger"
+	"github.com/qxnw/lib4go/security/crc32"
 	"github.com/qxnw/lib4go/utility"
 	"github.com/spf13/pflag"
 	"github.com/zkfy/archiver"
@@ -16,54 +18,50 @@ import (
 
 //command 根据输入参数打包项目
 type command struct {
-	logger      *logger.Logger
-	packFiles   []string
-	packProject bool
-	fileName    string
+	logger    *logger.Logger
+	packFiles []string
+	fileName  string
 }
 
 //PreRun 预执行用于绑定输入参数及运行前初始化
 func (r *command) PreRun(flags *pflag.FlagSet) error {
-	flags.BoolVarP(&r.packProject, "打包整个项目", "p", false, "根据项目名称进行打包，自动打包hydra,当前动态库和static,views目录")
 	flags.StringVarP(&r.fileName, "打包文件名称", "n", "", "打包文件名称")
 
 	flags.Parse(os.Args[1:])
 	if len(os.Args) < 3 {
 		return errors.New("未指定打包文件")
 	}
-	if r.packProject {
-		if len(r.fileName) > 0 {
-			r.packFiles = os.Args[5:]
-		} else {
-			r.packFiles = os.Args[3:]
-		}
+	if len(r.fileName) > 0 {
+		r.packFiles = os.Args[4:]
 	} else {
-		if len(r.fileName) > 0 {
-			r.packFiles = os.Args[4:]
-		} else {
-			r.packFiles = os.Args[2:]
-		}
+		r.packFiles = os.Args[2:]
 	}
 
 	if len(r.fileName) == 0 {
 		r.fileName = utility.GetGUID()[:6]
 	}
-	r.fileName = fmt.Sprintf("./%s.tar.gz", r.fileName)
+	if !strings.HasSuffix(r.fileName, ".tar.gz") {
+		r.fileName = fmt.Sprintf("./%s.tar.gz", r.fileName)
+	}
 	return nil
 }
 
 //Run 运行指令
 func (r *command) Run(args []string) (err error) {
-	if !r.packProject {
-		err = r.PackFiles(r.fileName, r.packFiles)
-	} else {
-		err = r.PackProjects(r.fileName, r.packFiles)
-	}
+
+	err = r.PackProjects(r.fileName, r.packFiles)
 	if err != nil {
 		r.logger.Errorf("打包失败:%v", err)
 		return err
 	}
-	r.logger.Info("打包完成:", r.fileName)
+	buff, err := ioutil.ReadFile(r.fileName)
+	if err != nil {
+		err = fmt.Errorf("读取文件失败:%v", err)
+		return
+	}
+
+	r.logger.Info("打包完成:", r.fileName, crc32.Encrypt(buff))
+
 	return nil
 }
 func (r *command) PackProjects(dest string, projectName []string) error {
@@ -77,11 +75,11 @@ func (r *command) PackProjects(dest string, projectName []string) error {
 		}
 
 		path := filepath.Join(p, "views")
-		if _, err := os.Stat(path); os.IsExist(err) {
+		if _, err := os.Stat(path); err == nil {
 			packFiles = append(packFiles, path)
 		}
 		static := filepath.Join(p, "static")
-		if _, err := os.Stat(static); os.IsExist(err) {
+		if _, err := os.Stat(static); err == nil {
 			packFiles = append(packFiles, static)
 		}
 	}

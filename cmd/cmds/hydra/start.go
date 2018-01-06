@@ -66,7 +66,7 @@ func (w *hydraProcess) kill(runParam []string) error {
 }
 func (w *hydraProcess) buildPlugin(projectName string) error {
 	w.logger.Infof("开始编译%s...", projectName)
-	err := BuildPlugin(projectName)
+	err := BuildPlugin(projectName, "0.0.1")
 	if err != nil {
 		w.logger.Error(projectName, "编译失败:", err)
 		return err

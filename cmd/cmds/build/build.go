@@ -37,7 +37,7 @@ func (r *command) Run(args []string) (err error) {
 	if err != nil {
 		return
 	}
-	r.logger.Info("开始编译:", "hydra")	
+	r.logger.Info("开始编译:", "hydra")
 	err = hydra.BuildHydra(r.version)
 	if err != nil {
 		return
@@ -48,7 +48,7 @@ func (r *command) Run(args []string) (err error) {
 func (r *command) BuildProjects(projectNames []string) error {
 	for _, p := range projectNames {
 		r.logger.Info("开始编译:", p)
-		err := hydra.BuildPlugin(p)
+		err := hydra.BuildPlugin(p, r.version)
 		if err != nil {
 			return err
 		}

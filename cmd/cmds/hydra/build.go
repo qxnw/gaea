@@ -33,7 +33,7 @@ func goInstallHydra(projectShortName string, version string) error {
 	return icmd.Run()
 }
 
-func GoBuild(projectShortName string) error {
+func GoBuild(projectShortName string, version string) error {
 	buildLock.Lock()
 	defer buildLock.Unlock()
 
@@ -42,7 +42,7 @@ func GoBuild(projectShortName string) error {
 		return err
 	}
 	os.Chdir(workDir)
-	icmd := exec.Command("go", "build", strings.Trim(projectShortName, "//"))
+	icmd := exec.Command("go", "build", "-ldflags", fmt.Sprintf("-X main.VERSION=%s", version), strings.Trim(projectShortName, "//"))
 	_, err = icmd.Output()
 	fmt.Println("err.x:", err, strings.Trim(projectShortName, "//"))
 	if err != nil && strings.Contains(err.Error(), "target main.main not defined") {
@@ -52,7 +52,7 @@ func GoBuild(projectShortName string) error {
 }
 
 //BuildPlugin  go build -buildmode=plugin
-func BuildPlugin(projectShortName string) error {
+func BuildPlugin(projectShortName string, version string) error {
 	buildLock.Lock()
 	defer buildLock.Unlock()
 
@@ -62,7 +62,7 @@ func BuildPlugin(projectShortName string) error {
 	}
 	os.Chdir(workDir)
 
-	icmd := exec.Command("go", "build", "-buildmode=plugin", strings.Trim(projectShortName, "//"))
+	icmd := exec.Command("go", "build", "-ldflags", fmt.Sprintf("-X main.VERSION=%s", version), "-buildmode=plugin", strings.Trim(projectShortName, "//"))
 	icmd.Stdout = os.Stdout
 	icmd.Stderr = os.Stderr
 	icmd.Env = append(os.Environ(), "GOGC=off")
