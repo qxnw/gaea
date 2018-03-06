@@ -9,11 +9,11 @@ import (
 	"strings"
 
 	"github.com/qxnw/gaea/cmd"
+	"github.com/qxnw/lib4go/archiver"
 	"github.com/qxnw/lib4go/logger"
 	"github.com/qxnw/lib4go/security/crc32"
 	"github.com/qxnw/lib4go/utility"
 	"github.com/spf13/pflag"
-	"github.com/zkfy/archiver"
 )
 
 //command 根据输入参数打包项目

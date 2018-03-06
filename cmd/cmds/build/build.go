@@ -24,8 +24,6 @@ func (r *command) PreRun(flags *pflag.FlagSet) error {
 	r.projects = os.Args[2:]
 	if len(r.version) > 0 {
 		r.projects = os.Args[4:]
-	} else {
-		r.version = "0.0.1"
 	}
 
 	return nil

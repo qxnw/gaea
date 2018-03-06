@@ -3,12 +3,11 @@ package install
 import (
 	"fmt"
 
-	"github.com/qxnw/hydra/context"
 	"github.com/qxnw/hydra/registry"
 	"github.com/qxnw/lib4go/logger"
 )
 
-func GetVarHandler(domain string, addr string, log logger.ILogger) context.VarHandle {
+func GetVarHandler(domain string, addr string, log logger.ILogger) func(tp string, name string) (string, error) {
 	return func(tp string, name string) (string, error) {
 		registry, err := registry.NewRegistryWithAddress(addr, log)
 		if err != nil {

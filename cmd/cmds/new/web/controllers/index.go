@@ -23,12 +23,12 @@ func (c *IndexController) Handle(name string, mode string, service string, ctx *
 	response = context.GetWebResponse(ctx)
 	config, err := conf.GetConf(ctx)
 	if err != nil {
-		response.SetError(context.ERR_NOT_EXTENDED, err)
+		response.SetContent(context.ERR_NOT_EXTENDED, err)
 		return
 	}
 	status, err := ctx.Input.Check(c.fields)
 	if err != nil {
-		response.SetError(status, err)
+		response.SetContent(status, err)
 		return
 	}
 	ctx.Info("----------访问首页----------")

@@ -7,7 +7,6 @@ import (
 	"plugin"
 
 	"github.com/qxnw/gaea/cmd"
-	"github.com/qxnw/hydra/context"
 	"github.com/qxnw/lib4go/file"
 	"github.com/qxnw/lib4go/logger"
 	"github.com/spf13/pflag"
@@ -50,7 +49,7 @@ func (r *command) Run(args []string) (err error) {
 	r.logger.Info("安装成功")
 	return err
 }
-func (r *command) loadPlugin(p string) (f func(domain string, r context.VarHandle) error, err error) {
+func (r *command) loadPlugin(p string) (f func(domain string, r func(tp string, name string) (string, error)) error, err error) {
 	path, err := file.GetAbs(p)
 	if err != nil {
 		return
@@ -67,9 +66,9 @@ func (r *command) loadPlugin(p string) (f func(domain string, r context.VarHandl
 	if err != nil {
 		return nil, fmt.Errorf("加载%s失败未找到函数Install,err:%v", path, err)
 	}
-	wkr, ok := work.(func(domain string, h context.VarHandle) error)
+	wkr, ok := work.(func(domain string, h func(tp string, name string) (string, error)) error)
 	if !ok {
-		return nil, fmt.Errorf("加载%s失败 Install函数必须为func(domain string, r context.VarHandle) error类型", path)
+		return nil, fmt.Errorf("加载%s失败 Install函数必须为func(domain string, r func(tp string, name string) (string, error)) error类型", path)
 	}
 	return wkr, nil
 }

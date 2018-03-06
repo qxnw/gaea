@@ -30,7 +30,7 @@ func init() {
 
 //GetConf 获取小微配置信息
 func GetConf(ctx *context.Context) (c *WebConf, err error) {
-	name, err := ctx.Input.GetArgsByName("conf")
+	name, err := ctx.Request.Setting.Get("conf")
 	if err != nil {
 		return nil, err
 	}
