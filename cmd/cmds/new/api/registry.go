@@ -4,7 +4,7 @@ var registryTmpl = `
 package main
 
 import (
-	"github.com/qxnw/helloworld/services/order"
+	"@pImportName/services/order"
 	"github.com/qxnw/hydra/component"
 	"github.com/qxnw/hydra/engines"
 )
