@@ -9,19 +9,15 @@ import (
 )
 
 type QueryHandler struct {
+	container component.IContainer
 }
 
 func NewQueryHandler(container component.IContainer) (u *QueryHandler) {
-	return &QueryHandler{}
+	return &QueryHandler{container: container}
 }
-func (u *QueryHandler) Handle(name string, engine string, service string, ctx *context.Context) (r context.Response, err error) {
-	response := context.GetStandardResponse()
-	response.SetContent(200, "hello world")
-	return response, nil
+func (u *QueryHandler) Handle(name string, engine string, service string, ctx *context.Context) (r interface{}) {
+	return "success"
 }
 
-func (u *QueryHandler) Close() error {
-	return nil
-}
 
 `

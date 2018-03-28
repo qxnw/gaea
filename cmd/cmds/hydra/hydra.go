@@ -1,21 +1,6 @@
 package hydra
 
-import (
-	"fmt"
-	"os"
-	"os/signal"
-	"syscall"
-
-	"path/filepath"
-
-	"strings"
-
-	"github.com/qxnw/gaea/cmd"
-	"github.com/qxnw/hydra/hydra"
-	"github.com/qxnw/lib4go/logger"
-	"github.com/spf13/pflag"
-)
-
+/*
 //command 根据输入参数打包项目
 type command struct {
 	logger            *logger.Logger
@@ -126,3 +111,4 @@ func (r *commandResolver) Resolve(name string, log *logger.Logger) (cmds.IComman
 func init() {
 	cmds.Register("run", &commandResolver{})
 }
+*/
