@@ -4,21 +4,22 @@ var mainTmpl = `
 package main
 
 import (
-	"github.com/qxnw/hydra/engines"
+	"@pImportName/services/order"
 	"github.com/qxnw/hydra/hydra"
 )
 
 func main() {
-	engines.AddServiceLoader(loader())
 	app := hydra.NewApp(
-		hydra.WithPlatName("@pShortName"),
-		hydra.WithSystemName("test"),
+		hydra.WithPlatName("hydra-20"),
+		hydra.WithSystemName("collector"),
 		hydra.WithServerTypes("api"),
-		hydra.WithAutoCreateConf(true),
+		hydra.WithAutoCreateConf(),
 		hydra.WithDebug())
+
+	app.Micro("/order/query", order.NewQueryHandler)
+
 	app.Start()
 }
-
 
 `
 var TmplMap map[string]string
@@ -26,7 +27,6 @@ var TmplMap map[string]string
 func init() {
 	TmplMap = map[string]string{
 		"main.go":                       mainTmpl,
-		"loader.go":                     registryTmpl,
 		"services/order/order.query.go": orderQueryTmpl,
 	}
 }

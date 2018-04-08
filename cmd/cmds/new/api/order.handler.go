@@ -19,5 +19,4 @@ func (u *QueryHandler) Handle(name string, engine string, service string, ctx *c
 	return "success"
 }
 
-
 `
