@@ -1,0 +1,82 @@
+{
+	"ImportPath": "github.com/qxnw/gaea",
+	"GoVersion": "go1.10",
+	"GodepVersion": "v80",
+	"Deps": [
+		{
+			"ImportPath": "github.com/fsnotify/fsnotify",
+			"Comment": "v1.4.2-6-g4da3e2c",
+			"Rev": "4da3e2cfbabc9f751898f250b49f2439785783a1"
+		},
+		{
+			"ImportPath": "github.com/golang/snappy",
+			"Rev": "553a641470496b2327abcac10b36396bd98e45c9"
+		},
+		{
+			"ImportPath": "github.com/qxnw/hydra/registry",
+			"Comment": "v0.9.0-234-g12e6b98",
+			"Rev": "12e6b98e14c1e7fff71b2c47bf0e53d019a5e644"
+		},
+		{
+			"ImportPath": "github.com/qxnw/lib4go/archiver",
+			"Rev": "6906aac1294f2f3a5f6024956be02f9a51648256"
+		},
+		{
+			"ImportPath": "github.com/qxnw/lib4go/concurrent/cmap",
+			"Rev": "6906aac1294f2f3a5f6024956be02f9a51648256"
+		},
+		{
+			"ImportPath": "github.com/qxnw/lib4go/file",
+			"Rev": "6906aac1294f2f3a5f6024956be02f9a51648256"
+		},
+		{
+			"ImportPath": "github.com/qxnw/lib4go/jsons",
+			"Rev": "6906aac1294f2f3a5f6024956be02f9a51648256"
+		},
+		{
+			"ImportPath": "github.com/qxnw/lib4go/logger",
+			"Rev": "6906aac1294f2f3a5f6024956be02f9a51648256"
+		},
+		{
+			"ImportPath": "github.com/qxnw/lib4go/net",
+			"Rev": "6906aac1294f2f3a5f6024956be02f9a51648256"
+		},
+		{
+			"ImportPath": "github.com/qxnw/lib4go/registry",
+			"Rev": "6906aac1294f2f3a5f6024956be02f9a51648256"
+		},
+		{
+			"ImportPath": "github.com/qxnw/lib4go/security/crc32",
+			"Rev": "6906aac1294f2f3a5f6024956be02f9a51648256"
+		},
+		{
+			"ImportPath": "github.com/qxnw/lib4go/security/md5",
+			"Rev": "6906aac1294f2f3a5f6024956be02f9a51648256"
+		},
+		{
+			"ImportPath": "github.com/qxnw/lib4go/transform",
+			"Rev": "6906aac1294f2f3a5f6024956be02f9a51648256"
+		},
+		{
+			"ImportPath": "github.com/qxnw/lib4go/types",
+			"Rev": "6906aac1294f2f3a5f6024956be02f9a51648256"
+		},
+		{
+			"ImportPath": "github.com/qxnw/lib4go/utility",
+			"Rev": "6906aac1294f2f3a5f6024956be02f9a51648256"
+		},
+		{
+			"ImportPath": "github.com/spf13/pflag",
+			"Comment": "v1.0.0-10-g4c012f6",
+			"Rev": "4c012f6dcd9546820e378d0bdda4d8fc772cdfea"
+		},
+		{
+			"ImportPath": "github.com/zkfy/log",
+			"Rev": "b2704c3ef8960f03712f350344e9232326286b31"
+		},
+		{
+			"ImportPath": "golang.org/x/sys/unix",
+			"Rev": "82aafbf43bf885069dc71b7e7c2f9d7a614d47da"
+		}
+	]
+}
